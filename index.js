@@ -16,6 +16,18 @@ function getSubjectAndClass(){
     });
     return subjectAndClass;
 }
+
+function getCourses(subjectSearch){
+    var courseMatch=[];
+for(let i=0;i<courses.length;i++){
+    if(courses[i].subject==subjectSearch){
+        courseMatch.push(courses[i].catalog_nbr);
+    }
+}
+    return courseMatch;
+
+}
+
 app.use('/',express.static('static'));
 
 
@@ -23,6 +35,18 @@ router.get('/',(req,res)=>{
     let courses=getSubjectAndClass();
     res.send(courses);
 
+});
+
+router.get('/:course_subject',(req,res)=>{
+    const subj=req.params.course_subject;
+    var matchingCourses=getCourses(subj);
+    if((matchingCourses.length)!=0){
+        res.send(matchingCourses);
+    } 
+    else{
+        res.status(404).send('This subject is not found.');
+    }
+    
 });
 
 app.use('/api/courses',router);

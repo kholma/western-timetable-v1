@@ -9,8 +9,22 @@
 </head>
 <body>
 <h1>Western Online Time Table</h1>
-<button onclick="displayCourses()" id="allSubAndClassBtn">See all Subjects and Classes</button>
-<div id="courseDiv" class="divStyle"></div>
+<table>
+<tr>
+    <td>
+      <button onclick="displayCourses()">Click to see all subjects and classes</button>
+      <div id="courseAndSubjDiv" class="div1"></div>
+    </td>
+    <td>
+    <p class="searchBar">Get all course codes for a given subject code:</p>
+    <form class="searchBar">
+    <input type="text" placeholder="Enter Subject Code" id="subj">
+    <button onclick="searchForCourses()">Search</button>
+    </form>
+    <div id="courseDiv" class="div1"></div>
+</td>
+</tr>
+</table>
 <script src="script.js"></script> 
 </body>
 </html>

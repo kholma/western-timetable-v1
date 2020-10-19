@@ -5,7 +5,18 @@ function displayCourses(){
       function(response){ 
          
           response.json().then(function(data){
-              display(data);
+            for(let i=0; i<data.length;i++){
+              let obj=data[i];
+              div=document.getElementById('courseAndSubjDiv');
+              p=document.createElement('p');
+      
+              subject=document.createTextNode(obj.subject+" ");
+              course=document.createTextNode(obj.className);
+              p.appendChild(subject);
+              p.appendChild(course);
+          
+              div.appendChild(p);
+          }
           
       });
     }
@@ -17,17 +28,9 @@ console.log("Error:", error);
 
 }
 
-function display(json){
-    for(var i=0; i<json.length;i++){
-        var obj=json[i];
-        div=document.getElementById('courseDiv');
-        p=document.createElement('p');
 
-        subject=document.createTextNode(obj.subject+" ");
-        course=document.createTextNode(obj.className);
-        p.appendChild(subject);
-        p.appendChild(course);
-    
-        div.appendChild(p);
-    }
+function searchForCourses(){
+  var subjectC=document.getElementById('subj').value;
+
+console.log(subjectC);
 }

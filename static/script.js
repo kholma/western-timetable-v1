@@ -5,6 +5,7 @@ function displayCourses(){
       function(response){ 
          
           response.json().then(function(data){
+        
             for(let i=0; i<data.length;i++){
               let obj=data[i];
               div=document.getElementById('courseAndSubjDiv');
@@ -17,6 +18,7 @@ function displayCourses(){
           
               div.appendChild(p);
           }
+        
           
       });
     }
@@ -31,6 +33,32 @@ console.log("Error:", error);
 
 function searchForCourses(){
   var subjectC=document.getElementById('subj').value;
+  fetch('/api/courses/'+subjectC)
+  .then(
+      function(response){
+        if(response.status!==200){
+          div2=document.getElementById('courseDiv');
+          perror=document.createElement('p');
+          errortxt=document.createTextNode("Not a valid subject code");
+          perror.appendChild(errortxt);
+          div2.appendChild(perror);
+        }
+        
+          response.json().then(function(data){
+            for(let i=0; i<data.length;i++){
+              let obj=data[i];
+              div2=document.getElementById('courseDiv');
+              p2=document.createElement('p');
+              course2=document.createTextNode(obj);
+              p2.appendChild(course2);
+              div2.appendChild(p2);
+          }
+          
+      });
+    }
+  )
 
-console.log(subjectC);
+.catch(function(error){
+console.log("Error:", error);
+  });
 }

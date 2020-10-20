@@ -1,8 +1,10 @@
 const express=require('express');
 const app=express();
 const router=express.Router();
-
+const storage=require("node-persist");
+ 
 const fs=require('fs');
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 let courseData=fs.readFileSync('Lab3-timetable-data.json');
 let courses=JSON.parse(courseData);
 
@@ -28,6 +30,38 @@ for(let i=0;i<courses.length;i++){
 
 }
 
+function getTimetable1(subjectCo,courseCo,courseComp){
+var timeEntry1=[];
+for(let i=0;i<courses.length;i++){
+    if(courses[i].subject==subjectCo&&courses[i].catalog_nbr==courseCo&&courses[i].course_info[0].ssr_component==courseComp){
+        timeEntry1.push({
+            days: courses[i].course_info[0].days,
+            start_time: courses[i].course_info[0].start_time,
+            end_time: courses[i].course_info[0].end_time,
+            ssr_component: courses[i].course_info[0].ssr_component});
+    }
+}
+return timeEntry1;
+}
+
+function getTimetable2(subjectCo,courseCo){
+    var timeEntry2=[];
+for(let i=0;i<courses.length;i++){
+    if(courses[i].subject==subjectCo&&courses[i].catalog_nbr==courseCo){
+        timeEntry2.push({
+            days: courses[i].course_info[0].days,
+            start_time: courses[i].course_info[0].start_time,
+            end_time: courses[i].course_info[0].end_time,
+            ssr_component: courses[i].course_info[0].ssr_component});
+    }
+}
+return timeEntry2;
+}
+
+
+
+
+
 app.use('/',express.static('static'));
 
 
@@ -38,8 +72,8 @@ router.get('/',(req,res)=>{
 });
 
 router.get('/:course_subject',(req,res)=>{
-    const subj=req.params.course_subject;
-    var matchingCourses=getCourses(subj);
+    const sub=req.params.course_subject;
+    var matchingCourses=getCourses(sub);
     if((matchingCourses.length)!=0){
         res.send(matchingCourses);
     } 
@@ -49,7 +83,38 @@ router.get('/:course_subject',(req,res)=>{
     
 });
 
+router.get('/:course_subject/:course_code/:course_component',(req,res)=>{
+const subCode1=req.params.course_subject;
+const courseCode1=req.params.course_code;
+const courseComponent=req.params.course_component;
+var timetableEntry1=getTimetable1(subCode1,courseCode1,courseComponent);
+if((timetableEntry.length)!=0){
+    res.send(timetableEntry);
+}
+else{
+    res.status(404).send('Error-one of the entered fields does not exist');
+}
+
+});
+
+router.get('/:course_subject/:course_code',(req,res)=>{
+    const subCode2=req.params.course_subject;
+    const courseCode2=req.params.course_code;
+    var timetableEntry2=getTimetable2(subCode2,courseCode2);
+    if((timetableEntry2.length)!=0){
+        res.send(timetableEntry2);
+    }
+    else{
+        res.status(404).send('Error-one of the entered fields does not exist');
+    }
+    
+    });
+
+
+
 app.use('/api/courses',router);
+
+
 
 const port=process.env.PORT || 3000;
 app.listen(port, ()=>console.log("Listening on port ${port}..."));

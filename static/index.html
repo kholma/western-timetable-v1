@@ -16,15 +16,22 @@
       <div id="courseAndSubjDiv" class="div1"></div>
 </tr>
 <tr>
-    <p class="searchBar">Get all course codes for a given subject code:</p>
-    <div class="searchBar">
+    <p>Get all course codes for a given subject code:</p>
+    <div>
         <input type="text" placeholder="Enter Subject Code" id="subj">
         <button onclick="searchForCourses()">Search</button>
     </div>
     <div id="courseDiv" class="div1"></div>
 </tr>
 <tr>
-
+<p>Please enter a subject code, course code, and course component (optional) to get the timetable entry: </p>
+<div>
+    <input type="text" placeholder="Enter Subject Code" id="subjectCode">
+    <input type="text" placeholder="Enter Course Code" id="courseCode">
+    <input type="text" placeholder="Enter Course Component (Optional)" id="courseComponent">
+    <button onclick="getTimetable()">Search</button>
+</div>
+<div id="timetableDiv" class="div1"></div>
 </tr>
 </table>
 <script src="script.js"></script> 

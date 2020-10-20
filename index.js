@@ -4,7 +4,6 @@ const router=express.Router();
 const storage=require("node-persist");
  
 const fs=require('fs');
-const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 let courseData=fs.readFileSync('Lab3-timetable-data.json');
 let courses=JSON.parse(courseData);
 
@@ -88,8 +87,8 @@ const subCode1=req.params.course_subject;
 const courseCode1=req.params.course_code;
 const courseComponent=req.params.course_component;
 var timetableEntry1=getTimetable1(subCode1,courseCode1,courseComponent);
-if((timetableEntry.length)!=0){
-    res.send(timetableEntry);
+if((timetableEntry1.length)!=0){
+    res.send(timetableEntry1);
 }
 else{
     res.status(404).send('Error-one of the entered fields does not exist');

@@ -46,6 +46,7 @@ function searchForCourses(){
         }
         
           response.json().then(function(data){
+            
             if(data.length>20){
               div2=document.getElementById('courseDiv');
               perror2=document.createElement('p');
@@ -54,6 +55,7 @@ function searchForCourses(){
               div2.appendChild(perror2);  
             }
             else{
+            
             for(let i=0; i<data.length;i++){
               let obj=data[i];
               div2=document.getElementById('courseDiv');
@@ -63,6 +65,7 @@ function searchForCourses(){
               div2.appendChild(p2);
           }
         }
+        
           
       });
     }
@@ -71,4 +74,94 @@ function searchForCourses(){
 .catch(function(error){
 console.log("Error:", error);
   });
+}
+
+function getTimetable(){
+  var subc=document.getElementById('subjectCode').value;
+  var coursec=document.getElementById('courseCode').value;
+  var coursecomp=document.getElementById('courseComponent').value;
+  if(coursecomp==null){
+    fetch('/api/courses/'+subc+'/'+coursec)
+    .then(
+        function(response){
+          if(response.status!==200){
+            div3=document.getElementById('timetableDiv');
+            perror2=document.createElement('p');
+            errortxt2=document.createTextNode("Enter valid codes.");
+            perror2.appendChild(errortxt2);
+            div3.appendChild(perror2);
+          }
+          
+            response.json().then(function(data){
+              
+              for(let i=0; i<data.length;i++){
+                let obj=data[i];
+                div3=document.getElementById('timetableDiv');
+                p3=document.createElement('p');
+                ttcomp=document.createTextNode(obj.ssr_component+" ");
+                ttday=document.createTextNode(obj.days+" ");
+                stime=document.createTextNode(obj.start_time+"-");
+                etime=document.createTextNode(obj.end_time);
+                p3.appendChild(ttday);
+                p3.appendChild(ttcomp);
+                p3.appendChild(stime);
+                p3.appendChild(etime);
+                div3.appendChild(p3);
+            }
+          
+            
+        });
+      }
+    )
+  
+  .catch(function(error){
+  console.log("Error:", error);
+    });
+
+
+
+
+
+  }
+  else{
+  
+  fetch('/api/courses/'+subc+'/'+coursec+'/'+coursecomp)
+  .then(
+      function(response){
+        if(response.status!==200){
+          div3=document.getElementById('timetableDiv');
+          perror2=document.createElement('p');
+          errortxt2=document.createTextNode("Enter valid codes.");
+          perror2.appendChild(errortxt2);
+          div3.appendChild(perror2);
+        }
+        
+          response.json().then(function(data){
+            
+            for(let i=0; i<data.length;i++){
+              let obj=data[i];
+              div3=document.getElementById('timetableDiv');
+              p3=document.createElement('p');
+              ttcomp=document.createTextNode(obj.ssr_component+" ");
+              ttday=document.createTextNode(obj.days+" ");
+              stime=document.createTextNode(obj.start_time+"-");
+              etime=document.createTextNode(obj.end_time);
+              p3.appendChild(ttday);
+              p3.appendChild(ttcomp);
+              p3.appendChild(stime);
+              p3.appendChild(etime);
+              div3.appendChild(p3);
+          }
+        
+          
+      });
+    }
+  )
+
+.catch(function(error){
+console.log("Error:", error);
+  });
+}
+
+ 
 }

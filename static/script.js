@@ -33,6 +33,7 @@ console.log("Error:", error);
 
 function searchForCourses(){
   var subjectC=document.getElementById('subj').value;
+ 
   fetch('/api/courses/'+subjectC)
   .then(
       function(response){
@@ -45,6 +46,14 @@ function searchForCourses(){
         }
         
           response.json().then(function(data){
+            if(data.length>20){
+              div2=document.getElementById('courseDiv');
+              perror2=document.createElement('p');
+              errortxt2=document.createTextNode("Please enter a valid subject code");
+              perror2.appendChild(errortxt2);
+              div2.appendChild(perror2);  
+            }
+            else{
             for(let i=0; i<data.length;i++){
               let obj=data[i];
               div2=document.getElementById('courseDiv');
@@ -53,6 +62,7 @@ function searchForCourses(){
               p2.appendChild(course2);
               div2.appendChild(p2);
           }
+        }
           
       });
     }

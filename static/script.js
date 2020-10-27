@@ -162,19 +162,22 @@ function getTimetable(){
 console.log("Error:", error);
   });
 }
-
- 
 }
 
 function createSched(){
+  clearDiv=document.getElementById('crschDiv');
+  while(clearDiv.firstChild){
+    clearDiv.removeChild(clearDiv.firstChild);
+  }
+
 var scnm=document.getElementById('sch').value;
-var url='/api/scheds/'+scnm;
+let url='/api/scheds/'+scnm;
 if(scnm==""){
-  scdiv=document.getElementById('crschDiv');
-  scp=document.createElement('p');
-  sctxt=document.createTextNode("Please enter a schedule name");
-  scp.appendChild(sctxt);
-  scdiv.appendChild(scp);
+  scdiverror=document.getElementById('crschDiv');
+  scperror=document.createElement('p');
+  sctxterror=document.createTextNode("Please enter a schedule name.");
+  scperror.appendChild(sctxterror);
+  scdiverror.appendChild(scperror);
 }
 else{
 fetch(url, {method:'POST', body:{"name":scnm}})
@@ -186,21 +189,98 @@ fetch(url, {method:'POST', body:{"name":scnm}})
       sctexterror=document.createTextNode("Schedule already exists.");
       scperror.appendChild(sctexterror);
       scdiverror.appendChild(scperror);
-      return;
+  
     }
     else{
       scdiv=document.getElementById('crschDiv');
       scp=document.createElement('p');
-      sctxt=document.createTextNode("Successfully created schedule");
+      sctxt=document.createTextNode("Successfully created schedule.");
       scp.appendChild(sctxt);
       scdiv.appendChild(scp);
       
     }
-  }
-)
+  })
 .catch(function(error){
   console.log("Error:", error);
     });
 
 }
 }
+
+function deleteSched(){
+ clearDiv=document.getElementById('deleteSchedDiv');
+  while(clearDiv.firstChild){
+    clearDiv.removeChild(clearDiv.firstChild);
+  }
+
+  var scnm3=document.getElementById('sch3').value;
+  let url4='/api/scheds/'+scnm3;
+  if(scnm3==""){
+    scdiverror=document.getElementById('deleteSchedDiv');
+    scperror=document.createElement('p');
+    sctxterror=document.createTextNode("Please enter a schedule name.");
+    scperror.appendChild(sctxterror);
+    scdiverror.appendChild(scperror);
+  }
+  else{
+fetch(url4, {method:'DELETE'})
+.then(
+  function(response){
+    if(response.status!==200){
+      scdiverror=document.getElementById('deleteSchedDiv');
+      scperror=document.createElement('p');
+      sctxterror=document.createTextNode("Error: Schedule doesn't exist.");
+      scperror.appendChild(sctxterror);
+      scdiverror.appendChild(scperror);
+    }
+    else{
+      scdiv=document.getElementById('deleteSchedDiv');
+      scp=document.createElement('p');
+      sctxt=document.createTextNode("All schedules have been deleted.");
+      scp.appendChild(sctxt);
+      scdiv.appendChild(scp);
+      
+
+}
+  
+  })
+  .catch(function(error){
+    console.log("Error:", error);
+      });
+  }
+}
+
+
+function deleteAllScheds(){
+  clearDiv=document.getElementById('deleteAllSchedsDiv');
+  while(clearDiv.firstChild){
+    clearDiv.removeChild(clearDiv.firstChild);
+  }
+
+let url5='/api/scheds';
+fetch(url5, {method:'DELETE'})
+.then(
+  function(response){
+    if(response.status!==200){
+      scdiverror=document.getElementById('deleteAllSchedsDiv');
+      scperror=document.createElement('p');
+      sctexterror=document.createTextNode("Error.");
+      scperror.appendChild(sctexterror);
+      scdiverror.appendChild(scperror);
+    }
+    else{
+      scdiv=document.getElementById('deleteAllSchedsDiv');
+      scp=document.createElement('p');
+      sctxt=document.createTextNode("Successfully deleted all schedules.");
+      scp.appendChild(sctxt);
+      scdiv.appendChild(scp);
+    }
+  })
+  .catch(function(error){
+    console.log("Error:", error);
+      });
+}
+
+    
+
+

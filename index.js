@@ -9,8 +9,6 @@ const DATABASE_NAME="Schedules";
 const client = new MongoClient(CONNECTION_URL, { useNewUrlParser: true,useUnifiedTopology:true });
 var database;
 var collection;
-var testerArray=[];
-
 
 app.use('/api',router);
 app.use('/',express.static('static'));
@@ -144,26 +142,18 @@ res.send(x.courses);
 router.put('/scheds/:schedule_name/:sched_courses',(req,res)=>{
 const sName=req.params.schedule_name;
 const schedCourses=req.params.sched_courses;
+collection.findOne({"name": sName}).then(result=>{
+    if (result){
+        collection.update(
+            {"name": sName},
+            {$set: {"courses": schedCourses}});
+        res.status(200).send("Successfully added courses");
+    }
+    else{
+        res.status(404).send("Error: A schedule name entered does not exist");
+    }
 
-let check=false;
-    for(let i=0;i<testerArray.length;i++){
-         if(testerArray[i]==sName){
-        check=true;
-        }
-}
-
-if(check){
-collection.update(
-    {"name": sName},
-    {$set: {"courses": schedCourses}});
-res.status(200).send("Successfully added courses");
-}
-
-else{
-res.status(404).send("Error: A schedule name entered does not exist");
-}
-
-
+});
 });
 
 router.get('/scheds',(req,res)=>{
@@ -172,60 +162,44 @@ router.get('/scheds',(req,res)=>{
         let first=x.name;
         let second=x.courses.length-1;
         result.push({name: first, courses:second});
-        console.log(result);
         });
-        res.send("Hi");
+        res.send(result);
         
-    
 });
 
 router.delete('/scheds/:schedule_name',(req,res)=>{
 const scheduleName=req.params.schedule_name;
-let check1=false;
-for(let i=0;i<testerArray.length;i++){
-    if(testerArray[i]==scheduleName){
-        check1=true;
-        testerArray[i]=null;
+collection.findOne({"name": scheduleName}).then(result=>{
+    if (result){
+        collection.remove({"name":scheduleName});
+        res.status(200).send("Deleted successfully");
     }
-}
-if(check1){
-collection.remove({"name":scheduleName});
-res.status(200).send("Deleted successfully");
-}
-else{
-    res.status(404).send("The schedule doesn't exist");
-}
+    else{
+        res.status(404).send("The schedule doesn't exist");
+    }
 
-
+});
 });
 
 router.delete('/scheds',(req,res)=>{
 collection.remove();
-for(let i=testerArray.length-1;i>=0;i--){
-testerArray.pop();
-}
-res.status(200).send("Deleted successfully");
+res.status(200).send("Deleted all schedules successfully");
 });
 
 router.post('/scheds/:schedule_name',(req,res)=>{
-        
-        let check2=true;
-        const name=req.params.schedule_name;
-        for(let i=0;i<testerArray.length;i++){
-            if(testerArray[i]==name){
-                check2=false;
-            }
-        }
-        if(check2){
-        collection.insertOne({"name": name,"courses":[" "]});
-        testerArray.push(name);
-        res.status(200).send("Created Schedule successfully.");
-        
-       }
     
+    const name=req.params.schedule_name;
+    collection.findOne({"name": name}).then(result=>{
+        if (result){
+            res.status(404).send("Error: Schedule with this name already exists");
+        }
         else{
-            res.status(404).send("Error");
-    }
+            collection.insertOne({"name": name,"courses":[" "]});
+            res.status(200).send("Created Schedule successfully.");
+            
+        }
+
+    });
   });
 
 const port=process.env.PORT || 3000;

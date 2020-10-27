@@ -167,8 +167,40 @@ console.log("Error:", error);
 }
 
 function createSched(){
-var nm=document.getElementById("sch").value;
+var scnm=document.getElementById('sch').value;
+var url='/api/scheds/'+scnm;
+if(scnm==""){
+  scdiv=document.getElementById('crschDiv');
+  scp=document.createElement('p');
+  sctxt=document.createTextNode("Please enter a schedule name");
+  scp.appendChild(sctxt);
+  scdiv.appendChild(scp);
+}
+else{
+fetch(url, {method:'POST', body:{"name":scnm}})
+.then(
+  function(response){
+    if(response.status!==200){
+      scdiverror=document.getElementById('crschDiv');
+      scperror=document.createElement('p');
+      sctexterror=document.createTextNode("Schedule already exists.");
+      scperror.appendChild(sctexterror);
+      scdiverror.appendChild(scperror);
+      return;
+    }
+    else{
+      scdiv=document.getElementById('crschDiv');
+      scp=document.createElement('p');
+      sctxt=document.createTextNode("Successfully created schedule");
+      scp.appendChild(sctxt);
+      scdiv.appendChild(scp);
+      
+    }
+  }
+)
+.catch(function(error){
+  console.log("Error:", error);
+    });
 
-
-
+}
 }

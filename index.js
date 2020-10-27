@@ -194,11 +194,10 @@ router.post('/scheds/:schedule_name',(req,res)=>{
             res.status(404).send("Error: Schedule with this name already exists");
         }
         else{
-            collection.insertOne({"name": name,"courses":[" "]});
-            res.status(200).send("Created Schedule successfully.");
+            collection.insertOne({"name": name,"courses":[" "]})
+            res.status(200).send("Success");
             
         }
-
     });
   });
 

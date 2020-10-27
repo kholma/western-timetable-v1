@@ -165,3 +165,10 @@ console.log("Error:", error);
 
  
 }
+
+function createSched(){
+var nm=document.getElementById("sch").value;
+
+
+
+}

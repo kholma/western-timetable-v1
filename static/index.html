@@ -11,19 +11,63 @@
 <h1>Western Online Time Table</h1>
 <table>
 <tr>
+    <td>
     
+        
       <button onclick="displayCourses()">Click to see all subjects and classes</button>
       <div id="courseAndSubjDiv" class="div1"></div>
+        
+    </td>
+
+     <td>
+         <b>Create a new schedule:</b>
+         <div>
+            <input type="text" placeholder="Enter Schedule Name" id="sch">
+            <button onclick="createSched()">Create</button>
+            <div id="crschDiv" class="div2"></div>
+        </div>
+        <hr>
+        <b>Add courses to your Schedule:</b>
+        <div>
+        <input type="text" placeholder="Enter Schedule Name" id="sch1">
+        <p>Add as many courses as needed in the following text box:</p>
+        <p>Format of the courses should be: "SubjectCode1 : CourseCode1, SubjectCode2 : CourseCode2.."</p>
+        <input type="text" placeholder="Enter Courses" id="crs">
+        <button onclick="addSchedCourses()">Add Courses</button>
+        <div id="addcrsesDiv" class="div2"></div>
+        </div>
+        <hr>
+        
+    </td> 
 </tr>
 <tr>
+    <td>
     <p>Get all course codes for a given subject code:</p>
     <div>
         <input type="text" placeholder="Enter Subject Code" id="subj">
         <button onclick="searchForCourses()">Search</button>
     </div>
     <div id="courseDiv" class="div1"></div>
+    </td>
+    <td>
+        <b>See courses saved in a schedule:</b>
+        <div>
+            <input type="text" placeholder="Enter Schedule Name" id="sch2">
+            <button onclick="getSchedCourse()">Get Courses</button>
+            <div id="getcrsesDiv" class="div3"></div>
+        </div>
+        <hr>
+        <b>Delete a schedule:</b>
+        <div>
+            <input type="text" placeholder="Enter Schedule Name" id="sch3">
+            <button onclick="deleteSched()">Delete Schedule</button>
+            <div id="deleteschedDiv" class="div2"></div>
+        </div>
+        <hr>
+    </td>
 </tr>
 <tr>
+    <td>
 <p>Please enter a subject code, course code, and course component (optional) to get the timetable entry: </p>
 <div>
     <input type="text" placeholder="Enter Subject Code" id="subjectCode">
@@ -32,6 +76,21 @@
     <button onclick="getTimetable()">Search</button>
 </div>
 <div id="timetableDiv" class="div1"></div>
+</td>
+<td>
+    <b>Delete all schedules:</b>
+    <div>
+        <button onclick="deleteAllScheds()">Click Here to Delete All Schedules</button>
+        <div id="deleteAllSchedsDiv" class="div2"></div>
+    </div>
+    <hr>
+    <b>Get a list of all schedules names and the number of courses saved in each schedule</b>
+    <div>
+        <button onclick="getNumCoursesinAllScheds()">Click Here to Get all Schedule Names and Number of Courses in Each Schedule</button>
+        <div id="numCoursesEachSchedDiv" class="div3"></div>
+    </div>
+    <hr>
+</td>
 </tr>
 </table>
 <script src="script.js"></script> 

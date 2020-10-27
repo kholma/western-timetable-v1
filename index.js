@@ -1,9 +1,38 @@
 const express=require('express');
 const app=express();
+const BodyParser=require("body-parser");
 const router=express.Router();
-const storage=require("node-persist");
- 
+const MongoClient = require('mongodb').MongoClient;
+const ObjectId=require('mongodb').ObjectID;
+const CONNECTION_URL="mongodb+srv://kholma:Julianakh1!@schedules.2mubj.mongodb.net/Schedules?retryWrites=true&w=majority";
+const DATABASE_NAME="Schedules";
+const client = new MongoClient(CONNECTION_URL, { useNewUrlParser: true,useUnifiedTopology:true });
+var database;
+var collection;
+var testerArray=[];
+
+
+app.use('/api',router);
+app.use('/',express.static('static'));
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({extended:true}));
+
+
+MongoClient.connect(CONNECTION_URL,{useNewUrlParse:true,useUnifiedTopology:true},(error,client)=>{
+    if(error){
+        throw error;
+    }
+    database=client.db(DATABASE_NAME);
+    collection=database.collection("scheds");
+    console.log("Connected to " +DATABASE_NAME);
+});
+
+
+
+ router.use(express.json());
+
 const fs=require('fs');
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 let courseData=fs.readFileSync('Lab3-timetable-data.json');
 let courses=JSON.parse(courseData);
 
@@ -59,18 +88,13 @@ return timeEntry2;
 
 
 
-
-
-app.use('/',express.static('static'));
-
-
-router.get('/',(req,res)=>{
+router.get('/courses',(req,res)=>{
     let courses=getSubjectAndClass();
     res.send(courses);
 
 });
 
-router.get('/:course_subject',(req,res)=>{
+router.get('/courses/:course_subject',(req,res)=>{
     const sub=req.params.course_subject;
     var matchingCourses=getCourses(sub);
     if((matchingCourses.length)!=0){
@@ -82,7 +106,7 @@ router.get('/:course_subject',(req,res)=>{
     
 });
 
-router.get('/:course_subject/:course_code/:course_component',(req,res)=>{
+router.get('/courses/:course_subject/:course_code/:course_component',(req,res)=>{
 const subCode1=req.params.course_subject;
 const courseCode1=req.params.course_code;
 const courseComponent=req.params.course_component;
@@ -96,7 +120,7 @@ else{
 
 });
 
-router.get('/:course_subject/:course_code',(req,res)=>{
+router.get('/courses/:course_subject/:course_code',(req,res)=>{
     const subCode2=req.params.course_subject;
     const courseCode2=req.params.course_code;
     var timetableEntry2=getTimetable2(subCode2,courseCode2);
@@ -109,11 +133,104 @@ router.get('/:course_subject/:course_code',(req,res)=>{
     
     });
 
+router.get('/scheds/:schedule_name',(req,res)=>{
+const schedName=req.params.schedule_name;
+collection.find({"name":schedName}).forEach(function(x){
+res.send(x.courses);
+});
+
+});
+
+router.put('/scheds/:schedule_name/:sched_courses',(req,res)=>{
+const sName=req.params.schedule_name;
+const schedCourses=req.params.sched_courses;
+
+let check=false;
+    for(let i=0;i<testerArray.length;i++){
+         if(testerArray[i]==sName){
+        check=true;
+        }
+}
+
+if(check){
+collection.update(
+    {"name": sName},
+    {$set: {"courses": schedCourses}});
+res.status(200).send("Successfully added courses");
+}
+
+else{
+res.status(404).send("Error: A schedule name entered does not exist");
+}
 
 
-app.use('/api/courses',router);
+});
+
+router.get('/scheds',(req,res)=>{
+    var result=[];
+    collection.find().forEach(function(x){
+        let first=x.name;
+        let second=x.courses.length-1;
+        result.push({name: first, courses:second});
+        console.log(result);
+        });
+        res.send("Hi");
+        
+    
+});
+
+router.delete('/scheds/:schedule_name',(req,res)=>{
+const scheduleName=req.params.schedule_name;
+let check1=false;
+for(let i=0;i<testerArray.length;i++){
+    if(testerArray[i]==scheduleName){
+        check1=true;
+        testerArray[i]=null;
+    }
+}
+if(check1){
+collection.remove({"name":scheduleName});
+res.status(200).send("Deleted successfully");
+}
+else{
+    res.status(404).send("The schedule doesn't exist");
+}
 
 
+});
+
+router.delete('/scheds',(req,res)=>{
+collection.remove();
+for(let i=testerArray.length-1;i>=0;i--){
+testerArray.pop();
+}
+res.status(200).send("Deleted successfully");
+});
+
+router.post('/scheds/:schedule_name',(req,res)=>{
+        
+        let check2=true;
+        const name=req.params.schedule_name;
+        for(let i=0;i<testerArray.length;i++){
+            if(testerArray[i]==name){
+                check2=false;
+            }
+        }
+        if(check2){
+        collection.insertOne({"name": name,"courses":[" "]});
+        testerArray.push(name);
+        res.status(200).send("Created Schedule successfully.");
+        
+       }
+    
+        else{
+            res.status(404).send("Error");
+    }
+  });
 
 const port=process.env.PORT || 3000;
-app.listen(port, ()=>console.log("Listening on port ${port}..."));
+app.listen(port, ()=>{
+    console.log("Listening on port ${port}...");
+    
+    
+});

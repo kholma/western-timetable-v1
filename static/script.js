@@ -210,6 +210,55 @@ fetch(url, {method:'POST', body:{"name":scnm}})
 }
 }
 
+function addSchedCourses(){
+  clearDiv=document.getElementById('addcrsesDiv');
+  while(clearDiv.firstChild){
+    clearDiv.removeChild(clearDiv.firstChild);
+  }
+  
+  var scnm1=document.getElementById('sch1').value;
+  var schedsubj=document.getElementById('scsubCode').value;
+  var schedcrses=document.getElementById('sccourseCode').value;
+ 
+  if((scnm1=="")||(schedcrses=="")||(schedsubj=="")){
+    scdiverror=document.getElementById('addcrsesDiv');
+    scperror=document.createElement('p');
+    sctxterror=document.createTextNode("Please enter valid inputs.");
+    scperror.appendChild(sctxterror);
+    scdiverror.appendChild(scperror);
+  }
+else{
+
+let url1='/api/scheds/'+scnm1+'/'+schedsubj+'/'+schedcrses;
+fetch(url1, {method:'PUT'})
+.then(
+  function(response){
+    if(response.status!==200){
+      scdiverror=document.getElementById('addcrsesDiv');
+      scperror=document.createElement('p');
+      sctexterror=document.createTextNode("Schedule doesn't exist.");
+      scperror.appendChild(sctexterror);
+      scdiverror.appendChild(scperror);
+    }
+    else{
+      scdiv=document.getElementById('addcrsesDiv');
+      scp=document.createElement('p');
+      sctxt=document.createTextNode("Successfully added courses to the schedule.");
+      scp.appendChild(sctxt);
+      scdiv.appendChild(scp);
+    }
+
+
+
+
+  })
+  .catch(function(error){
+    console.log("Error:", error);
+      });
+
+}
+}
+
 function getSchedCourses(){
   clearDiv=document.getElementById('getcrsesDiv');
   while(clearDiv.firstChild){

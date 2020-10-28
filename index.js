@@ -147,14 +147,23 @@ collection.find({"name":schedName}).forEach(function(x){
 
 });
 
-router.put('/scheds/:schedule_name/:sched_courses',(req,res)=>{
-const sName=req.params.schedule_name;
-const schedCourses=req.params.sched_courses;
+router.put('/scheds/:schedule_name/:sched_subj/:sched_courses',(req,res)=>{
+var sName=req.params.schedule_name;
+var schedSubjects=req.params.sched_subj;
+var schedCourses=req.params.sched_courses;
+var arrayToPut=[];
+var subCodeArr=schedSubjects.split(',');
+var courseCodeArr=schedCourses.split(',');
+
+for(let i=0;i<subCodeArr.length;i++){
+arrayToPut.push({subjectCode:subCodeArr[i],courseCode:courseCodeArr[i]});
+}
+console.log(arrayToPut);
 collection.findOne({"name": sName}).then(result=>{
     if (result){
         collection.update(
             {"name": sName},
-            {$set: {"courses": schedCourses}});
+            {$set: {"courses":arrayToPut}});
         res.status(200).send("Successfully added courses");
     }
     else{

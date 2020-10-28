@@ -30,9 +30,10 @@
         <b>Add courses to your Schedule:</b>
         <div>
         <input type="text" placeholder="Enter Schedule Name" id="sch1">
-        <p>Add as many courses as needed in the following text box:</p>
-        <p>Format of the courses should be: "SubjectCode1 : CourseCode1, SubjectCode2 : CourseCode2.."</p>
-        <input type="text" placeholder="Enter Courses" id="crs">
+        <p>Add all subject codes in the following text box (seperate each one with a ","):</p>
+        <input type="text" placeholder="Enter Subject Codes" id="scsubCode">
+        <p>Add all course codes in correspondance (in the same order) as the subject codes above (separate each one with a ","):</p>
+       <input type="text" placeholder="Enter Course Codes" id="sccourseCode">
         <button onclick="addSchedCourses()">Add Courses</button>
         <div id="addcrsesDiv" class="div2"></div>
         </div>

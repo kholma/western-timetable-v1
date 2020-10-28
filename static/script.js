@@ -43,6 +43,7 @@ function searchForCourses(){
           errortxt=document.createTextNode("Not a valid subject code");
           perror.appendChild(errortxt);
           div2.appendChild(perror);
+          return;
         }
         
           response.json().then(function(data){
@@ -90,6 +91,7 @@ function getTimetable(){
             errortxt2=document.createTextNode("Enter valid codes.");
             perror2.appendChild(errortxt2);
             div3.appendChild(perror2);
+            return;
           }
           
             response.json().then(function(data){
@@ -134,6 +136,7 @@ function getTimetable(){
           errortxt2=document.createTextNode("Enter valid codes.");
           perror2.appendChild(errortxt2);
           div3.appendChild(perror2);
+          return;
         }
         
           response.json().then(function(data){
@@ -213,7 +216,6 @@ function getSchedCourses(){
     clearDiv.removeChild(clearDiv.firstChild);
   }
   var scnm2=document.getElementById('sch2').value;
-
   if(scnm2==""){
     scdiverror=document.getElementById('getcrsesDiv');
     scperror=document.createElement('p');
@@ -221,88 +223,47 @@ function getSchedCourses(){
     scperror.appendChild(sctxterror);
     scdiverror.appendChild(scperror);
   }
-
-  
   else{
-
-  fetch('/api/scheds/'+scnm2)
-  .then(
-      function(response){
-        if(response.status!==200){
-          scdiverror=document.getElementById('getcrsesDiv');
-          scperror=document.createElement('p');
-          sctxterror=document.createTextNode("Error: Schedule doesn't exist.");
-          scperror.appendChild(sctxterror);
-          scdiverror.appendChild(scperror);
-          
-        }
-        
-          response.json().then(function(data){
-             
-            for(let i=0; i<data.length;i++){
-              //may need to change to .subjCode and .courseCode
-              let obj=data[i];
-              scdiv=document.getElementById('getcrsesDiv');
-              scp=document.createElement('p');
-              sctext=document.createTextNode(obj);
-              scp.appendChild(sctxt);
-              scdiv.appendChild(scp);
-          }
-        
-        
-          
-      });
-    }
-  )
-
-.catch(function(error){
-console.log("Error:", error);
-  });
-  
-  } 
-   
-}
-
-function deleteSched(){
- clearDiv=document.getElementById('deleteSchedDiv');
-  while(clearDiv.firstChild){
-    clearDiv.removeChild(clearDiv.firstChild);
-  }
-
-  var scnm3=document.getElementById('sch3').value;
-  let url3='/api/scheds/'+scnm3;
-  if(scnm3==""){
-    scdiverror=document.getElementById('deleteSchedDiv');
-    scperror=document.createElement('p');
-    sctxterror=document.createTextNode("Please enter a schedule name.");
-    scperror.appendChild(sctxterror);
-    scdiverror.appendChild(scperror);
-  }
-  else{
-fetch(url3, {method:'DELETE'})
+    fetch('/api/scheds/'+scnm2)
 .then(
   function(response){
     if(response.status!==200){
-      scdiverror=document.getElementById('deleteSchedDiv');
+      scdiverror=document.getElementById('getcrsesDiv');
       scperror=document.createElement('p');
-      sctxterror=document.createTextNode("Error: Schedule doesn't exist.");
-      scperror.appendChild(sctxterror);
+      sctexterror=document.createTextNode("Error: No schedules exist.");
+      scperror.appendChild(sctexterror);
       scdiverror.appendChild(scperror);
     }
     else{
-      scdiv=document.getElementById('deleteSchedDiv');
-      scp=document.createElement('p');
-      sctxt=document.createTextNode("All schedules have been deleted.");
-      scp.appendChild(sctxt);
-      scdiv.appendChild(scp);
+      response.json().then(function(data){
       
+          if(data[0]==" "){
+          scdiv=document.getElementById('getcrsesDiv');
+          scp=document.createElement('p');
+          sctxt=document.createTextNode("No courses are saved in this schedule.");
+          scp.appendChild(sctxt);
+          scdiv.appendChild(scp);
 
-}
-  
+          }
+          else{
+          scdiv=document.getElementById('getcrsesDiv');
+          scp=document.createElement('p');
+          sctxt=document.createTextNode(data);
+          scp.appendChild(sctxt);
+          scdiv.appendChild(scp);
+          }
+    
+      
+  });
+    }
   })
   .catch(function(error){
     console.log("Error:", error);
       });
+
+
+
+
   }
 }
 

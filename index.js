@@ -128,20 +128,22 @@ router.get('/courses/:course_subject/:course_code',(req,res)=>{
         res.send(timetableEntry2);
     }
     else{
-        res.status(404).send('Error-one of the entered fields does not exist');
+        res.status(404).send('Error:one of the entered fields does not exist');
     }
     
     });
 
 router.get('/scheds/:schedule_name',(req,res)=>{
 const schedName=req.params.schedule_name;
-var result1=[];
-collection.find({"name":schedName}).forEach(function(x){
-result1.push(x.courses);
-if(result1.length==i){
-    res.status(200).send(result1);
+if(i==0){
+    res.status(404).send("Error: No schedules exist");
 }
+else{
+collection.find({"name":schedName}).forEach(function(x){
+    res.status(200).send(x.courses);
+
 });
+}
 
 });
 
@@ -175,7 +177,7 @@ res.status(404).send("Error: No schedules exist");
         second=x.courses.length-1;
         result.push({name:first,num:second});
          if(result.length==i){
-             res.send(result);
+             res.status(200).send(result);
          }
     });
 }

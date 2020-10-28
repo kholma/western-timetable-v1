@@ -9,6 +9,7 @@ const DATABASE_NAME="Schedules";
 const client = new MongoClient(CONNECTION_URL, { useNewUrlParser: true,useUnifiedTopology:true });
 var database;
 var collection;
+var i=0;
 
 app.use('/api',router);
 app.use('/',express.static('static'));
@@ -31,6 +32,7 @@ MongoClient.connect(CONNECTION_URL,{useNewUrlParse:true,useUnifiedTopology:true}
 
 const fs=require('fs');
 const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
+const { Z_FIXED } = require('zlib');
 let courseData=fs.readFileSync('Lab3-timetable-data.json');
 let courses=JSON.parse(courseData);
 
@@ -133,8 +135,12 @@ router.get('/courses/:course_subject/:course_code',(req,res)=>{
 
 router.get('/scheds/:schedule_name',(req,res)=>{
 const schedName=req.params.schedule_name;
+var result1=[];
 collection.find({"name":schedName}).forEach(function(x){
-res.send(x.courses);
+result1.push(x.courses);
+if(result1.length==i){
+    res.status(200).send(result1);
+}
 });
 
 });
@@ -158,20 +164,33 @@ collection.findOne({"name": sName}).then(result=>{
 
 router.get('/scheds',(req,res)=>{
     var result=[];
+    var first;
+    var second;
+    if(i==0){
+res.status(404).send("Error: No schedules exist");
+    }
+    else{
     collection.find().forEach(function(x){
-        let first=x.name;
-        let second=x.courses.length-1;
-        result.push({name: first, courses:second});
-        });
-        res.send(result);
-        
-});
+       first=x.name;
+        second=x.courses.length-1;
+        result.push({name:first,num:second});
+         if(result.length==i){
+             res.send(result);
+         }
+    });
+}
+    });
+    
+
+
+    
 
 router.delete('/scheds/:schedule_name',(req,res)=>{
 const scheduleName=req.params.schedule_name;
 collection.findOne({"name": scheduleName}).then(result=>{
     if (result){
         collection.remove({"name":scheduleName});
+        i--;
         res.status(200).send("Deleted successfully");
     }
     else{
@@ -183,6 +202,7 @@ collection.findOne({"name": scheduleName}).then(result=>{
 
 router.delete('/scheds',(req,res)=>{
 collection.remove();
+i=0;
 res.status(200).send("Deleted all schedules successfully");
 });
 
@@ -195,6 +215,7 @@ router.post('/scheds/:schedule_name',(req,res)=>{
         }
         else{
             collection.insertOne({"name": name,"courses":[" "]})
+            i++;
             res.status(200).send("Success");
             
         }

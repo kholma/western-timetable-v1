@@ -207,6 +207,62 @@ fetch(url, {method:'POST', body:{"name":scnm}})
 }
 }
 
+function getSchedCourses(){
+  clearDiv=document.getElementById('getcrsesDiv');
+  while(clearDiv.firstChild){
+    clearDiv.removeChild(clearDiv.firstChild);
+  }
+  var scnm2=document.getElementById('sch2').value;
+
+  if(scnm2==""){
+    scdiverror=document.getElementById('getcrsesDiv');
+    scperror=document.createElement('p');
+    sctxterror=document.createTextNode("Please enter a schedule name.");
+    scperror.appendChild(sctxterror);
+    scdiverror.appendChild(scperror);
+  }
+
+  
+  else{
+
+  fetch('/api/scheds/'+scnm2)
+  .then(
+      function(response){
+        if(response.status!==200){
+          scdiverror=document.getElementById('getcrsesDiv');
+          scperror=document.createElement('p');
+          sctxterror=document.createTextNode("Error: Schedule doesn't exist.");
+          scperror.appendChild(sctxterror);
+          scdiverror.appendChild(scperror);
+          
+        }
+        
+          response.json().then(function(data){
+             
+            for(let i=0; i<data.length;i++){
+              //may need to change to .subjCode and .courseCode
+              let obj=data[i];
+              scdiv=document.getElementById('getcrsesDiv');
+              scp=document.createElement('p');
+              sctext=document.createTextNode(obj);
+              scp.appendChild(sctxt);
+              scdiv.appendChild(scp);
+          }
+        
+        
+          
+      });
+    }
+  )
+
+.catch(function(error){
+console.log("Error:", error);
+  });
+  
+  } 
+   
+}
+
 function deleteSched(){
  clearDiv=document.getElementById('deleteSchedDiv');
   while(clearDiv.firstChild){
@@ -214,7 +270,7 @@ function deleteSched(){
   }
 
   var scnm3=document.getElementById('sch3').value;
-  let url4='/api/scheds/'+scnm3;
+  let url3='/api/scheds/'+scnm3;
   if(scnm3==""){
     scdiverror=document.getElementById('deleteSchedDiv');
     scperror=document.createElement('p');
@@ -223,7 +279,7 @@ function deleteSched(){
     scdiverror.appendChild(scperror);
   }
   else{
-fetch(url4, {method:'DELETE'})
+fetch(url3, {method:'DELETE'})
 .then(
   function(response){
     if(response.status!==200){
@@ -257,8 +313,8 @@ function deleteAllScheds(){
     clearDiv.removeChild(clearDiv.firstChild);
   }
 
-let url5='/api/scheds';
-fetch(url5, {method:'DELETE'})
+let url4='/api/scheds';
+fetch(url4, {method:'DELETE'})
 .then(
   function(response){
     if(response.status!==200){
@@ -279,6 +335,51 @@ fetch(url5, {method:'DELETE'})
   .catch(function(error){
     console.log("Error:", error);
       });
+}
+
+
+function getNumCoursesinAllScheds(){
+  clearDiv=document.getElementById('numCoursesEachSchedDiv');
+  while(clearDiv.firstChild){
+    clearDiv.removeChild(clearDiv.firstChild);
+  }
+fetch('/api/scheds')
+.then(
+  function(response){
+    if(response.status!==200){
+      scdiverror=document.getElementById('numCoursesEachSchedDiv');
+      scperror=document.createElement('p');
+      sctexterror=document.createTextNode("Error: No schedules exist.");
+      scperror.appendChild(sctexterror);
+      scdiverror.appendChild(scperror);
+    }
+    else{
+      response.json().then(function(data){
+        
+        for(let i=0; i<data.length;i++){
+          let obj=data[i];
+          scdiv=document.getElementById('numCoursesEachSchedDiv');
+          scp=document.createElement('p');
+  
+          scName=document.createTextNode(obj.name+" ");
+          scNum=document.createTextNode(obj.num);
+          scp.appendChild(scName);
+          scp.appendChild(scNum);
+      
+          scdiv.appendChild(scp);
+      }
+    
+      
+  });
+    }
+  })
+  .catch(function(error){
+    console.log("Error:", error);
+      });
+
+
+
+
 }
 
     

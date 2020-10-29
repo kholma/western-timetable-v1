@@ -158,7 +158,6 @@ var courseCodeArr=schedCourses.split(',');
 for(let i=0;i<subCodeArr.length;i++){
 arrayToPut.push({subjectCode:subCodeArr[i],courseCode:courseCodeArr[i]});
 }
-console.log(arrayToPut);
 collection.findOne({"name": sName}).then(result=>{
     if (result){
         collection.update(

@@ -109,6 +109,16 @@ function getTimetable(){
                 p3.appendChild(stime);
                 p3.appendChild(etime);
                 div3.appendChild(p3);
+
+                if(obj.ssr_component=="LEC"){
+                  p3.setAttribute('class','lectureC');
+                }
+                if(obj.ssr_component=="LAB"){
+                  p3.setAttribute('class','labC');
+                }
+                else{
+                  p3.setAttribute('class','tutorialC');
+                }
             }
           
             

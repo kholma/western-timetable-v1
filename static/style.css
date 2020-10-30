@@ -24,3 +24,15 @@ h1 {
     overflow:scroll;
 }
 
+.lectureC{
+background-color:blue;
+}
+
+.labC{
+background-color:green;
+}
+
+.tutorialC{
+background-color:red;
+}
+

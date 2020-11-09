@@ -33,6 +33,15 @@ console.log("Error:", error);
 
 function searchForCourses(){
   var subjectC=document.getElementById('subj').value;
+  let display=[];
+  var letters1=/^[A-Za-z]+$/;
+
+     if(subjectC.search(letters1)){
+         alert("Please enter a valid input.");
+ return true;
+     }
+     
+    
  
   fetch('/api/courses/'+subjectC)
   .then(
@@ -81,6 +90,22 @@ function getTimetable(){
   var subc=document.getElementById('subjectCode').value;
   var coursec=document.getElementById('courseCode').value;
   var coursecomp=document.getElementById('courseComponent').value;
+
+  let display=[];
+     var letters2=/^[A-Za-z]+$/;     
+   if(subc.search(letters2)){
+         alert("Please enter a valid input.");
+ return true;
+     }
+     if(coursec.search(letters2)){
+      alert("Please enter a valid input.");
+return true;
+  }
+  if(coursecomp.search(letters2)){
+    alert("Please enter a valid input.");
+return true;
+}
+     
   if(coursecomp==null){
     fetch('/api/courses/'+subc+'/'+coursec)
     .then(
@@ -179,11 +204,20 @@ console.log("Error:", error);
 
 function createSched(){
   clearDiv=document.getElementById('crschDiv');
+
   while(clearDiv.firstChild){
     clearDiv.removeChild(clearDiv.firstChild);
   }
 
 var scnm=document.getElementById('sch').value;
+
+let display=[];
+var letters3=/^[A-Za-z]+$/;     
+if(scnm.search(letters3)){
+    alert("Please enter a valid input.");
+return true;
+}
+
 let url='/api/scheds/'+scnm;
 if(scnm==""){
   scdiverror=document.getElementById('crschDiv');
@@ -229,6 +263,24 @@ function addSchedCourses(){
   var scnm1=document.getElementById('sch1').value;
   var schedsubj=document.getElementById('scsubCode').value;
   var schedcrses=document.getElementById('sccourseCode').value;
+
+  
+  let display=[];
+     var letters4=/^[A-Za-z]+$/;     
+   if(scnm1.search(letters4)){
+         alert("Please enter a valid input.");
+ return true;
+     }
+
+     if(schedsubj.search(letters4)){
+      alert("Please enter a valid input.");
+return true;
+  }
+
+  if(schedcrses.search(letters4)){
+    alert("Please enter a valid input.");
+return true;
+}
  
   if((scnm1=="")||(schedcrses=="")||(schedsubj=="")){
     scdiverror=document.getElementById('addcrsesDiv');

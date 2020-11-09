@@ -11,6 +11,9 @@ var database;
 var collection;
 var i=0;
 
+const {check, validationResult}=require('express-validator');
+
+
 app.use('/api',router);
 app.use('/',express.static('static'));
 app.use(BodyParser.json());
@@ -31,8 +34,6 @@ MongoClient.connect(CONNECTION_URL,{useNewUrlParse:true,useUnifiedTopology:true}
  router.use(express.json());
 
 const fs=require('fs');
-const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
-const { Z_FIXED } = require('zlib');
 let courseData=fs.readFileSync('Lab3-timetable-data.json');
 let courses=JSON.parse(courseData);
 
@@ -85,7 +86,6 @@ for(let i=0;i<courses.length;i++){
 }
 return timeEntry2;
 }
-
 
 
 router.get('/courses',(req,res)=>{
@@ -147,10 +147,15 @@ collection.find({"name":schedName}).forEach(function(x){
 
 });
 
-router.put('/scheds/:schedule_name/:sched_subj/:sched_courses',(req,res)=>{
+router.put('/scheds/:schedule_name/:sched_subj/:sched_courses',[
+    check('sName').matches(/^([0-9A-Za-z\u00AA-\uFFDC]*)$/).trim().isLength({min:1,max:20}).escape(),
+    check('schedSubjects').matches(/^([0-9A-Za-z\u00AA-\uFFDC]*)$/).trim().isLength({min:1,max:20}).escape(),
+    check('schedCourses').matches(/^([0-9A-Za-z\u00AA-\uFFDC]*)$/).trim().isLength({min:1,max:20}).escape()
+], (req,res)=>{
 var sName=req.params.schedule_name;
 var schedSubjects=req.params.sched_subj;
 var schedCourses=req.params.sched_courses;
+
 var arrayToPut=[];
 var subCodeArr=schedSubjects.split(',');
 var courseCodeArr=schedCourses.split(',');
@@ -216,9 +221,11 @@ i=0;
 res.status(200).send("Deleted all schedules successfully");
 });
 
-router.post('/scheds/:schedule_name',(req,res)=>{
+router.post('/scheds/:schedule_name',[
+    check('name').trim().matches(/^([0-9A-Za-z\u00AA-\uFFDC]*)$/).trim().isLength({min:1,max:20}).escape()
+],(req,res)=>{
     
-    const name=req.params.schedule_name;
+    var name=req.params.schedule_name;
     collection.findOne({"name": name}).then(result=>{
         if (result){
             res.status(404).send("Error: Schedule with this name already exists");

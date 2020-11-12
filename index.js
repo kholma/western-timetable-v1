@@ -133,19 +133,45 @@ router.get('/courses/:course_subject/:course_code',(req,res)=>{
     
     });
 
-router.get('/scheds/:schedule_name',(req,res)=>{
-const schedName=req.params.schedule_name;
-if(i==0){
-    res.status(404).send("Error: No schedules exist");
-}
-else{
-collection.find({"name":schedName}).forEach(function(x){
-    res.status(200).send(x.courses);
-
-});
-}
-
-});
+    function getTT(schcrses){
+        var timeEntry3=[];
+        for(let j=0;j<schcrses.length;j++){
+        for(let i=0;i<courses.length;i++){
+            if(courses[i].subject==schcrses[j].subjectCode&&courses[i].catalog_nbr==schcrses[j].courseCode){
+                
+                timeEntry3.push({
+                    subject:courses[i].subject,
+                    course: courses[i].catalog_nbr,
+                    days: courses[i].course_info[0].days,
+                    start_time: courses[i].course_info[0].start_time,
+                    end_time: courses[i].course_info[0].end_time,
+                    ssr_component: courses[i].course_info[0].ssr_component});
+            }
+        }
+    }
+        return timeEntry3;
+        
+    }
+    
+    router.get('/scheds/:schedule_name',(req,res)=>{
+    const schedName=req.params.schedule_name;
+    var ans;
+    if(i==0){
+        res.status(404).send("Error: No schedules exist");
+    }
+    else{
+    collection.find({"name":schedName}).forEach(function(x){
+    
+    
+        ans=getTT(x.courses);
+            
+            res.status(200).send(ans);
+        
+    
+    });
+    }
+    
+    });
 
 router.put('/scheds/:schedule_name/:sched_subj/:sched_courses',[
     check('sName').matches(/^([0-9A-Za-z\u00AA-\uFFDC]*)$/).trim().isLength({min:1,max:20}).escape(),

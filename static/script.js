@@ -357,11 +357,25 @@ function getSchedCourses(){
 
           }
           else{
-          scdiv=document.getElementById('getcrsesDiv');
-          scp=document.createElement('p');
-          sctxt=document.createTextNode(data);
-          scp.appendChild(sctxt);
-          scdiv.appendChild(scp);
+            for(let i=0; i<data.length;i++){
+              let obj=data[i];
+              div3=document.getElementById('getcrsesDiv');
+              p3=document.createElement('p');
+              ttsubj=document.createTextNode(obj.subject);
+              ttcourse=document.createTextNode(obj.course);
+              ttcomp=document.createTextNode(obj.ssr_component+" ");
+              ttday=document.createTextNode(obj.days+" ");
+              stime=document.createTextNode(obj.start_time+"-");
+              etime=document.createTextNode(obj.end_time);
+              p3.appendChild(ttsubj);
+              p3.appendChild(ttcourse);
+              p3.appendChild(ttday);
+              p3.appendChild(ttcomp);
+              p3.appendChild(stime);
+              p3.appendChild(etime);
+              div3.appendChild(p3);
+          }
+            
           }
     
       

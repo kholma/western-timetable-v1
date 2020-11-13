@@ -34,9 +34,9 @@ console.log("Error:", error);
 function searchForCourses(){
   var subjectC=document.getElementById('subj').value;
   let display=[];
-  var letters1=/^[A-Za-z]+$/;
-
-     if(subjectC.search(letters1)){
+  var letters1=/^[0-9A-Za-z\u00AA-\uFFDC]+$/;
+  
+       if(subjectC.search(letters1)){
          alert("Please enter a valid input.");
  return true;
      }
@@ -92,7 +92,7 @@ function getTimetable(){
   var coursecomp=document.getElementById('courseComponent').value;
 
   let display=[];
-     var letters2=/^[A-Za-z]+$/;     
+  var letters2=/^[0-9A-Za-z\u00AA-\uFFDC]+$/;     
    if(subc.search(letters2)){
          alert("Please enter a valid input.");
  return true;
@@ -212,7 +212,7 @@ function createSched(){
 var scnm=document.getElementById('sch').value;
 
 let display=[];
-var letters3=/^[A-Za-z]+$/;     
+var letters3=/^[0-9A-Za-z\u00AA-\uFFDC]+$/;     
 if(scnm.search(letters3)){
     alert("Please enter a valid input.");
 return true;
@@ -266,21 +266,12 @@ function addSchedCourses(){
 
   
   let display=[];
-     var letters4=/^[A-Za-z]+$/;     
-   if(scnm1.search(letters4)){
+  var letters4=/^[0-9A-Za-z\u00AA-\uFFDC]+$/;     
+   if((scnm1.search(letters4))){
          alert("Please enter a valid input.");
  return true;
      }
 
-     if(schedsubj.search(letters4)){
-      alert("Please enter a valid input.");
-return true;
-  }
-
-  if(schedcrses.search(letters4)){
-    alert("Please enter a valid input.");
-return true;
-}
  
   if((scnm1=="")||(schedcrses=="")||(schedsubj=="")){
     scdiverror=document.getElementById('addcrsesDiv');
@@ -391,6 +382,48 @@ function getSchedCourses(){
 
   }
 }
+function deleteSched(){
+  clearDiv=document.getElementById('deleteSchedDiv');
+   while(clearDiv.firstChild){
+     clearDiv.removeChild(clearDiv.firstChild);
+   }
+ 
+   var scnm3=document.getElementById('sch3').value;
+   let url4='/api/scheds/'+scnm3;
+   if(scnm3==""){
+     scdiverror=document.getElementById('deleteSchedDiv');
+     scperror=document.createElement('p');
+     sctxterror=document.createTextNode("Please enter a schedule name.");
+     scperror.appendChild(sctxterror);
+     scdiverror.appendChild(scperror);
+   }
+   else{
+ fetch(url4, {method:'DELETE'})
+ .then(
+   function(response){
+     if(response.status!==200){
+       scdiverror=document.getElementById('deleteSchedDiv');
+       scperror=document.createElement('p');
+       sctxterror=document.createTextNode("Error: Schedule doesn't exist.");
+       scperror.appendChild(sctxterror);
+       scdiverror.appendChild(scperror);
+     }
+     else{
+       scdiv=document.getElementById('deleteSchedDiv');
+       scp=document.createElement('p');
+       sctxt=document.createTextNode("Schedule has been deleted.");
+       scp.appendChild(sctxt);
+       scdiv.appendChild(scp);
+ 
+ 
+ }
+ 
+   })
+   .catch(function(error){
+     console.log("Error:", error);
+       });
+   }
+ }
 
 
 function deleteAllScheds(){

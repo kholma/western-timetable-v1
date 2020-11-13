@@ -213,7 +213,7 @@ res.status(404).send("Error: No schedules exist");
     else{
     collection.find().forEach(function(x){
        first=x.name;
-        second=x.courses.length-1;
+        second=x.courses.length;
         result.push({name:first,num:second});
          if(result.length==i){
              res.status(200).send(result);
